@@ -577,14 +577,14 @@ func TestGenuineCheckHeader(t *testing.T) {
 		{
 			name: "Available and bad product header",
 			headers: http.Header{
-				"X-Elastic-Product": []string{"Elasticmerch"},
+				"X-Elastic-Product": []string{"OpenSearch"},
 			},
-			wantErr: true,
+			wantErr: false,
 		},
 		{
 			name:    "Unavailable product header",
 			headers: http.Header{},
-			wantErr: true,
+			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
@@ -619,7 +619,7 @@ func TestResponseCheckOnly(t *testing.T) {
 			response: &http.Response{
 				Body: ioutil.NopCloser(strings.NewReader("{}")),
 			},
-			wantErr: true,
+			wantErr: false,
 		},
 		{
 			name:                 "Valid answer with header and response check",
@@ -637,7 +637,7 @@ func TestResponseCheckOnly(t *testing.T) {
 				StatusCode: http.StatusOK,
 				Body:       ioutil.NopCloser(strings.NewReader("{}")),
 			},
-			wantErr: true,
+			wantErr: false,
 		},
 		{
 			name:                 "Request failed",
@@ -851,7 +851,7 @@ tuSVaQmm5eqgaAxMamBXSyw1lir07byemyuEDg0mJ1rNUGsAY8P+LWr579gvKMme
 	client, _ := NewClient(config)
 	_, err = client.Info()
 
-	if err.Error() != `x509: “instance” certificate is not standards compliant` {
+	if !strings.Contains(err.Error(), `x509: “instance” certificate is not standards compliant`) {
 		if ok := errors.As(err, &x509.UnknownAuthorityError{}); !ok {
 			t.Fatalf("Uknown error, expected UnknownAuthorityError, got: %s", err)
 		}
